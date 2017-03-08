@@ -271,7 +271,7 @@ public class Vote4Dis {
 
     public void rewardPlayer(String player) {
         for (String voteReward : voteRewards) {
-            game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), voteReward);
+            game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), voteReward.replace("@p", player));
         }
     }
 
