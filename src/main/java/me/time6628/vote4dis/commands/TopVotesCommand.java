@@ -18,7 +18,7 @@ import java.util.TreeMap;
  * Created by TimeTheCat on 3/1/2017.
  */
 public class TopVotesCommand implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4Dis pl = Vote4Dis.instance;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext commandContext) throws CommandException {

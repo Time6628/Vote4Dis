@@ -41,9 +41,6 @@ public class Vote4Dis {
     @Inject
     private Logger logger;
 
-    @Inject
-    PluginContainer pluginContainer;
-
     //config stuff
     @Inject
     @DefaultConfig(sharedRoot = false)
@@ -77,11 +74,11 @@ public class Vote4Dis {
         registerEvents();
     }
 
-    void registerEvents() {
+    private void registerEvents() {
         game.getEventManager().registerListeners(this, new V4DListener());
     }
 
-    void registerCommands() {
+    private void registerCommands() {
         game.getCommandManager().register(this, CommandSpec.builder()
         .executor(new me.time6628.vote4dis.commands.VotesCommand())
         .permission("vote4dis.command.votes")
@@ -180,7 +177,7 @@ public class Vote4Dis {
         return getVotes(uuid.toString());
     }
 
-    public Integer getVotes(String uuid) {
+    private Integer getVotes(String uuid) {
         try (Jedis jedis = getJedis().getResource()) {
             if (jedis.hexists(RedisKeys.VOTE_COUNT_KEY, uuid))
                 return Integer.parseInt(jedis.hget(RedisKeys.VOTE_COUNT_KEY, uuid));
@@ -199,7 +196,7 @@ public class Vote4Dis {
         incrVote(id.toString());
     }
 
-    public void incrVote(String id) {
+    private void incrVote(String id) {
         try (Jedis jedis = getJedis().getResource()) {
             jedis.hincrBy(RedisKeys.VOTE_COUNT_KEY, id, 1);
         }
@@ -248,7 +245,7 @@ public class Vote4Dis {
         return new JedisPool(config, host, port, 0, password);
     }
 
-    public JedisPool getJedis() {
+    private JedisPool getJedis() {
         if (jedisPool == null) {
             if (this.cfg.getNode("redis", "use-password").getBoolean()) {
                 return setupRedis(this.redisHost, this.redisPort, this.redisPass);
@@ -269,12 +266,14 @@ public class Vote4Dis {
         rewardPlayer(player.getName());
     }
 
-    public void rewardPlayer(String player) {
+    @SuppressWarnings("ConstantConditions")
+    private void rewardPlayer(String player) {
         for (String voteReward : voteRewards) {
             game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), voteReward.replace("@p", player));
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public PaginationService getPaginationService() {
         return game.getServiceManager().provide(PaginationService.class).get();
     }

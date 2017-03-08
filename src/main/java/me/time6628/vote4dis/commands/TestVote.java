@@ -13,7 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
  * Created by TimeTheCat on 2/26/2017.
  */
 public class TestVote implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4Dis pl = Vote4Dis.instance;
     @Override
     public CommandResult execute(CommandSource src, CommandContext commandContext) throws CommandException {
         pl.getGame().getServer().getBroadcastChannel().send(Texts.getBroadcastMessage(src.getName(), "FTBSERVERS"));

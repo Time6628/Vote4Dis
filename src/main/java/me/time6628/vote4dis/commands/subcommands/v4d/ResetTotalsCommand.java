@@ -12,7 +12,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
  * Created by TimeTheCat on 3/2/2017.
  */
 public class ResetTotalsCommand implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4Dis pl = Vote4Dis.instance;
     @Override
     public CommandResult execute(CommandSource src, CommandContext commandContext) throws CommandException {
         pl.resetVoteTotals();

@@ -14,7 +14,7 @@ import org.spongepowered.api.entity.living.player.Player;
  * Created by TimeTheCat on 2/22/2017.
  */
 public class VotesCommand implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4Dis pl = Vote4Dis.instance;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

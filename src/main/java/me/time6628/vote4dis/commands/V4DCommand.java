@@ -17,7 +17,7 @@ import java.util.List;
  * Created by TimeTheCat on 3/2/2017.
  */
 public class V4DCommand implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4Dis pl = Vote4Dis.instance;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

@@ -13,7 +13,7 @@ import org.spongepowered.api.service.pagination.PaginationList;
  * Created by TimeTheCat on 2/26/2017.
  */
 public class VoteCommand implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4Dis pl = Vote4Dis.instance;
 
 
     @Override
@@ -22,7 +22,7 @@ public class VoteCommand implements CommandExecutor {
         return CommandResult.success();
     }
 
-    PaginationList getPages() {
+    private PaginationList getPages() {
         return pl.getPaginationService().builder()
                 .contents(Texts.getVoteLinksAsText())
                 .title(Texts.voteCommandTitle)
