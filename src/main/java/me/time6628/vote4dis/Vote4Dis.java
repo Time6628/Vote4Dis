@@ -3,6 +3,7 @@ package me.time6628.vote4dis;
 
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.vexsoftware.votifier.model.Vote;
 import me.time6628.vote4dis.commands.*;
 import me.time6628.vote4dis.commands.subcommands.v4d.ResetTotalsCommand;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -280,5 +281,12 @@ public class Vote4Dis {
 
     public List<String> getVoteLinks() {
         return voteLinks;
+    }
+
+    public void handleVote(Player player, Vote vote) {
+        getGame().getServer().getBroadcastChannel().send(Texts.getBroadcastMessage(vote.getUsername(), vote.getServiceName()));
+        incrVote(player);
+        rewardPlayer(player);
+        logger.info("Username: " + vote.getUsername(), "IP Address: " + vote.getAddress(), "Site: " + vote.getServiceName());
     }
 }

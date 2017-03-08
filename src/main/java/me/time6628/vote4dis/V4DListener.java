@@ -17,11 +17,6 @@ public class V4DListener {
     @Listener
     public void onVote(VotifierEvent event, @Getter("getVote") Vote vote) {
         Optional<Player> p = pl.getGame().getServer().getPlayer(vote.getUsername());
-        if (p.isPresent()) {
-            Player player = p.get();
-            pl.getGame().getServer().getBroadcastChannel().send(Texts.getBroadcastMessage(vote.getUsername(), vote.getServiceName()));
-            pl.incrVote(player);
-            pl.rewardPlayer(player);
-        }
+        p.ifPresent(player -> pl.handleVote(player, vote));
     }
 }
