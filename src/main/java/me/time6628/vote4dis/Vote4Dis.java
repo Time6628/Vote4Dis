@@ -24,6 +24,8 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.TextElement;
+import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import redis.clients.jedis.Jedis;
@@ -129,7 +131,8 @@ public class Vote4Dis {
 
 
                 this.cfg.getNode("messages", "prefix").setValue("&5[Voting]");
-                this.cfg.getNode("messages", "broadcast").setValue("%s has just voted at %s, you can vote too with /vote!");
+                this.cfg.getNode("messages", "broadcast").setValue(TypeToken.of(TextTemplate.class), Texts.broadcastMessage);
+                this.cfg.getNode("messages", "login").setValue(TypeToken.of(TextTemplate.class), Texts.votesMessage);
 
                 this.cfgMgr.save(cfg);
             }
@@ -144,7 +147,8 @@ public class Vote4Dis {
             this.redisPass = cfg.getNode("redis", "password").getString();
 
             Texts.setPrefix(TextSerializers.FORMATTING_CODE.deserialize(cfg.getNode("messages", "prefix").getString()));
-            Texts.setBroadcastMessage(cfg.getNode("messages", "broadcast").getString());
+            Texts.setBroadcastMessage(cfg.getNode("messages", "broadcast").getValue(TypeToken.of(TextTemplate.class)));
+            Texts.setVotesMessage(cfg.getNode("messages", "login").getValue(TypeToken.of(TextTemplate.class)));
 
             if (this.cfg.getNode("redis", "use-password").getBoolean()) {
                 jedisPool = setupRedis(this.redisHost, this.redisPort, this.redisPass);
@@ -161,8 +165,10 @@ public class Vote4Dis {
 
     @Listener
     public void onPlayerJoin(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
-        player.sendMessage(ChatTypes.ACTION_BAR, Texts.getVotesMessage(getVotes(player)));
-        player.sendMessage(Texts.getVotesMessage(getVotes(player)));
+        Map<String, TextElement> args = new HashMap<>();
+        args.put("votes", Text.of(getVotes(player)));
+        player.sendMessage(ChatTypes.ACTION_BAR, Texts.votesMessage.apply(args).build());
+        player.sendMessage(Texts.votesMessage.apply(args).build());
         updateUUIDCache(player.getUniqueId().toString(), player.getName());
     }
 
@@ -283,7 +289,10 @@ public class Vote4Dis {
     }
 
     public void handleVote(Player player, Vote vote) {
-        getGame().getServer().getBroadcastChannel().send(Texts.getBroadcastMessage(vote.getUsername(), vote.getServiceName()));
+        Map<String, TextElement> args = new HashMap<>();
+        args.put("player", Text.of(player.getName()));
+        args.put("serivce", Text.of(vote.getServiceName()));
+        getGame().getServer().getBroadcastChannel().send(Texts.broadcastMessage.apply(args).build());
         incrVote(player);
         rewardPlayer(player);
         logger.info("Username: " + vote.getUsername(), "IP Address: " + vote.getAddress(), "Site: " + vote.getServiceName());
