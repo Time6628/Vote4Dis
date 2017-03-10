@@ -4,8 +4,12 @@ import static org.spongepowered.api.text.TextTemplate.arg;
 
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +70,11 @@ public class Texts {
     public static List<Text> getVoteLinksAsText() {
         List<Text> texts = new ArrayList<>();
         for (String s : Vote4Dis.instance.getVoteLinks()) {
-            texts.add(Text.builder().color(TextColors.LIGHT_PURPLE).append(Text.of(s)).build());
+            try {
+                texts.add(Text.of(TextColors.LIGHT_PURPLE, TextActions.openUrl(new URL(s)), s));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
         return texts;
     }
@@ -76,5 +84,17 @@ public class Texts {
             TextColors.LIGHT_PURPLE, " has just voted at ",
             arg("service").color(TextColors.WHITE),
             TextColors.LIGHT_PURPLE, ", you can too with /vote!"
+    );
+
+    public static TextTemplate voteLinkCmdMessage = TextTemplate.of(
+            TextColors.LIGHT_PURPLE, "Added ",
+            arg("link").color(TextColors.WHITE),
+            TextColors.LIGHT_PURPLE, " to the list of vote links."
+    );
+
+    public static TextTemplate rewardCmdMessage = TextTemplate.of(
+            TextColors.LIGHT_PURPLE, "Added ",
+            arg("link").color(TextColors.WHITE),
+            TextColors.LIGHT_PURPLE, " to the list of vote rewards."
     );
 }

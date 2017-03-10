@@ -11,8 +11,8 @@ import java.util.Optional;
 /**
  * Created by TimeTheCat on 2/22/2017.
  */
-class V4DListener {
-    private final Vote4Dis pl = Vote4Dis.instance;
+public class V4DListener {
+    private Vote4Dis pl = Vote4Dis.instance;
 
     @Listener
     public void onVote(VotifierEvent event, @Getter("getVote") Vote vote) {

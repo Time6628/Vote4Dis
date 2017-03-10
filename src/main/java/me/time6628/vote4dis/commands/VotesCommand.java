@@ -9,6 +9,11 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.TextElement;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by TimeTheCat on 2/22/2017.
@@ -20,7 +25,9 @@ public class VotesCommand implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if (src instanceof ConsoleSource) return CommandResult.empty();
 
-        src.sendMessage(Texts.getVotesMessage(pl.getVotes((Player) src)));
+        Map<String, TextElement> a = new HashMap<>();
+        a.put("votes", Text.of(pl.getVotes((Player) src)));
+        src.sendMessage(Texts.votesMessage.apply(a).build());
         pl.updateUUIDCache(((Player) src).getUniqueId().toString(), src.getName());
 
         return CommandResult.success();

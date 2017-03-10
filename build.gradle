@@ -40,6 +40,10 @@ shadowJar {
         include dependency('org.apache.commons:commons-pool2')
         //include dependency('org.apache.commons:commons-pool')
     }
+
+    relocate 'org.apache', 'me.time6628.vote4dis.relocate.org.apache'
+    relocate 'redis.clients', 'me.time6628.vote4dis.relocate.redis.clients'
+
     archiveName = 'Vote4Dis-0.1.jar'
 }
 

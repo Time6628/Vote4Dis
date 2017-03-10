@@ -3,15 +3,20 @@ package me.time6628.vote4dis;
 
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.sun.glass.ui.CommonDialogs;
 import com.vexsoftware.votifier.model.Vote;
 import me.time6628.vote4dis.commands.*;
+import me.time6628.vote4dis.commands.subcommands.v4d.AddRewardCommand;
+import me.time6628.vote4dis.commands.subcommands.v4d.AddVoteLinkCommand;
 import me.time6628.vote4dis.commands.subcommands.v4d.ResetTotalsCommand;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,7 +26,6 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextElement;
@@ -33,6 +37,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Plugin(id = "vote4dis", name = "Vote4Dis", description = "A Redis powered vote listener.", url = "http://time6628.me", authors = {"Time6628"})
@@ -106,11 +111,25 @@ public class Vote4Dis {
                 .permission("vote4dis.command.admin.resettotals")
                 .description(Text.of("Reset top voters."))
                 .build();
+        CommandSpec avl = CommandSpec.builder()
+                .executor(new AddVoteLinkCommand())
+                .permission("vote4dis.command.admin.addvotelink")
+                .arguments(GenericArguments.string(Text.of("link")))
+                .description(Text.of("Add a vote link."))
+                .build();
+        CommandSpec ar = CommandSpec.builder()
+                .executor(new AddRewardCommand())
+                .permission("vote4dis.command.admin.addreward")
+                .arguments(GenericArguments.remainingJoinedStrings(Text.of("reward")))
+                .description(Text.of("Add a vote reward."))
+                .build();
         game.getCommandManager().register(this, CommandSpec.builder()
                 .executor(new V4DCommand())
                 .permission("vote4dis.command.admin.base")
                 .description(Text.of("Use /v4d."))
                 .child(rt, "resettotals")
+                .child(avl, "addvotelink")
+                .child(ar, "addvotereward")
                 .build(), "v4d");
     }
 
@@ -268,7 +287,7 @@ public class Vote4Dis {
     }
 
     // rewards
-    public void rewardPlayer(Player player) {
+    private void rewardPlayer(Player player) {
         rewardPlayer(player.getName());
     }
 
@@ -291,10 +310,44 @@ public class Vote4Dis {
     public void handleVote(Player player, Vote vote) {
         Map<String, TextElement> args = new HashMap<>();
         args.put("player", Text.of(player.getName()));
-        args.put("serivce", Text.of(vote.getServiceName()));
+        args.put("service", Text.of(vote.getServiceName()));
         getGame().getServer().getBroadcastChannel().send(Texts.broadcastMessage.apply(args).build());
         incrVote(player);
         rewardPlayer(player);
         logger.info("Username: " + vote.getUsername(), "IP Address: " + vote.getAddress(), "Site: " + vote.getServiceName());
+    }
+
+    public void addVoteLink(String link) {
+        try {
+            List<String> links = cfg.getNode("voting", "links").getList(TypeToken.of(String.class));
+            links.add(link);
+            cfg.getNode("voting", "links").setValue(links);
+            cfgMgr.save(cfg);
+            voteLinks.add(link);
+        } catch (ObjectMappingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getVoteRewards() {
+        return voteRewards;
+    }
+
+    public void addReward(String reward) {
+        try {
+            List<String> re = cfg.getNode("voting", "rewards").getList(TypeToken.of(String.class));
+            re.add(reward);
+            cfg.getNode("voting", "rewards").setValue(re);
+            cfgMgr.save(cfg);
+            voteRewards.add(reward);
+        } catch (ObjectMappingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Map<String, TextElement> getTextTemplateMap(String key, String value) {
+        Map<String, TextElement> a = new HashMap<>();
+        a.put(key, Text.of(value));
+        return a;
     }
 }
