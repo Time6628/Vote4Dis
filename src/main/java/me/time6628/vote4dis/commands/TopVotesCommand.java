@@ -9,10 +9,8 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by TimeTheCat on 3/1/2017.
@@ -35,10 +33,17 @@ public class TopVotesCommand implements CommandExecutor {
 
     private List<Text> getTexts() {
         Map<String, Integer> voters = pl.getTopVotes();
-        Map<String, Integer> b = new TreeMap<>((o1, o2) -> Integer.compare(voters.get(o2), voters.get(o1)));
-        b.putAll(voters);
+        Map<String, Integer> v = voters.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
         List<Text> texts = new ArrayList<>();
-        b.forEach((s, s2) -> texts.add(Text.builder().append(Text.of(s2 + " - " + s)).build()));
+        v.forEach((s, s2) -> texts.add(Text.builder().append(Text.of(s2 + " - " + s)).build()));
         return texts;
     }
 }

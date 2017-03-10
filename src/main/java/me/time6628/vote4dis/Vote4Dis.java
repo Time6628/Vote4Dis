@@ -146,7 +146,7 @@ public class Vote4Dis {
                 this.cfg.getNode("redis", "password").setValue("password");
 
                 this.cfg.getNode("voting", "links").setValue(new ArrayList(){{add("https://link1.io");}});
-                this.cfg.getNode("voting", "rewards").setValue(new ArrayList(){{add("give minecraft:potato 1");}});
+                this.cfg.getNode("voting", "rewards").setValue(new ArrayList(){{add("give @p minecraft:potato 1");}});
 
 
                 this.cfg.getNode("messages", "prefix").setValue("&5[Voting]");
@@ -249,9 +249,13 @@ public class Vote4Dis {
 
     public Map<String, Integer> getTopVotes() {
         try (Jedis jedis = getJedis().getResource()) {
+            //get all of the voters
             Map<String, String> a = jedis.hgetAll(RedisKeys.VOTE_COUNT_KEY);
+            //get a new map to put them in
             Map<String, Integer> b = new HashMap<>();
-            a.forEach((s, s2) -> b.put(getNameFromCache(s), Integer.valueOf(s2)));
+            a.forEach((s, s2) -> {
+                if (Integer.valueOf(s2) > 0) b.put(getNameFromCache(s), Integer.valueOf(s2));
+            });
             return b;
         }
     }
