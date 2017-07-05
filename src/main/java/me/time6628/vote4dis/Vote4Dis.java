@@ -39,6 +39,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "vote4dis", name = "Vote4Dis", description = "A Redis powered vote listener.", url = "http://time6628.me", authors = {"Time6628"})
 public class Vote4Dis {
@@ -123,6 +124,12 @@ public class Vote4Dis {
                 .arguments(GenericArguments.remainingJoinedStrings(Text.of("reward")))
                 .description(Text.of("Add a vote reward."))
                 .build();
+        CommandSpec dv = CommandSpec.builder()
+                .executor(new DoubleVotesCommand())
+                .permission("vote4dis.command.admin.doublevotes")
+                .arguments(GenericArguments.integer(Text.of("Days")))
+                .description(Text.of("Double vote rewards for X amount of days.."))
+                .build();
         game.getCommandManager().register(this, CommandSpec.builder()
                 .executor(new V4DCommand())
                 .permission("vote4dis.command.admin.base")
@@ -130,6 +137,7 @@ public class Vote4Dis {
                 .child(rt, "resettotals")
                 .child(avl, "addvotelink")
                 .child(ar, "addvotereward")
+                .child(dv, "doublevotes", "dv")
                 .build(), "v4d");
     }
 
@@ -229,9 +237,14 @@ public class Vote4Dis {
 
     public void resetVoteTotals() {
         try (Jedis jedis = getJedis().getResource()) {
-            Map<String, String> totals = jedis.hgetAll(RedisKeys.VOTE_COUNT_KEY);
-            String[] keys = (String[]) totals.keySet().toArray();
-            jedis.hdel(RedisKeys.VOTE_COUNT_KEY, keys);
+            jedis.del(RedisKeys.VOTE_COUNT_KEY);
+        }
+    }
+
+    public void voteDouble(Integer integer) {
+        try (Jedis jedis = getJedis().getResource()) {
+            jedis.set(RedisKeys.DOUBLE_REWARDS, "7");
+            jedis.expire(RedisKeys.DOUBLE_REWARDS, (int) TimeUnit.DAYS.toSeconds(integer));
         }
     }
 
@@ -317,6 +330,10 @@ public class Vote4Dis {
         args.put("service", Text.of(vote.getServiceName()));
         getGame().getServer().getBroadcastChannel().send(Texts.broadcastMessage.apply(args).build());
         incrVote(player);
+        if (isDoubleVotes()) {
+            rewardPlayer(player);
+            player.sendMessage(Texts.DOUBLE_VOTES);
+        }
         rewardPlayer(player);
         logger.info("Username: " + vote.getUsername(), "IP Address: " + vote.getAddress(), "Site: " + vote.getServiceName());
     }
@@ -353,5 +370,11 @@ public class Vote4Dis {
         Map<String, TextElement> a = new HashMap<>();
         a.put(key, Text.of(value));
         return a;
+    }
+
+    public boolean isDoubleVotes() {
+        try (Jedis jedis = getJedis().getResource()) {
+            return jedis.exists(RedisKeys.DOUBLE_REWARDS);
+        }
     }
 }

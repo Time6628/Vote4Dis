@@ -23,6 +23,7 @@ public class Texts {
     public static final Text voteCommandTitle = Text.builder().color(TextColors.DARK_PURPLE).append(Text.of("Vote Links")).build();
     public static final Text topVotersTitle = Text.builder().color(TextColors.DARK_PURPLE).append(Text.of("Top Voters")).build();
     public static final Text resetVoteTotals = Text.builder().color(TextColors.LIGHT_PURPLE).append(Text.of("Vote totals have been reset.")).build();
+    public static Text DOUBLE_VOTES = Text.builder().color(TextColors.LIGHT_PURPLE).append(Text.of("Double Rewards are currently active for voting, double all rewards!")).build();
 
     public static void setPrefix(Text prefix) {
         Texts.prefix = prefix;
