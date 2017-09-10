@@ -3,7 +3,6 @@ package me.time6628.vote4dis;
 
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
-import com.sun.glass.ui.CommonDialogs;
 import com.vexsoftware.votifier.model.Vote;
 import me.time6628.vote4dis.commands.*;
 import me.time6628.vote4dis.commands.subcommands.v4d.AddRewardCommand;
