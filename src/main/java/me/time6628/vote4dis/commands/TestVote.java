@@ -20,6 +20,6 @@ public class TestVote implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext commandContext) throws CommandException {
         pl.handleVote((Player) src, new Vote("SERVERLIST", src.getName(), "127.0.0.1", "TIMESTAMP"));
-        return null;
+        return CommandResult.success();
     }
 }

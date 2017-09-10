@@ -14,7 +14,7 @@ import java.util.Optional;
  * Created by TimeTheCat on 7/4/2017.
  */
 public class DoubleVotesCommand implements CommandExecutor {
-    Vote4Dis instance = Vote4Dis.instance;
+    private Vote4Dis instance = Vote4Dis.instance;
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         Optional<Integer> oi = args.getOne(Text.of("Days"));
@@ -22,6 +22,6 @@ public class DoubleVotesCommand implements CommandExecutor {
             instance.voteDouble(integer);
             src.sendMessage(Text.of("Double votes enabled for " + oi.get() + " day(s)."));
         });
-        return null;
+        return CommandResult.success();
     }
 }
