@@ -2,6 +2,7 @@ package me.time6628.vote4dis;
 
 import static org.spongepowered.api.text.TextTemplate.arg;
 
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.action.TextActions;
@@ -56,6 +57,12 @@ public class Texts {
             arg("votes").color(TextColors.WHITE),
             TextColors.LIGHT_PURPLE, " votes."
     );
+
+
+    public static PaginationList hasVotedRecently = Vote4Dis.instance.getPaginationService().builder()
+            .title(Text.builder().color(TextColors.DARK_PURPLE).append(Text.of("Have you recently voted?")).build())
+            .contents(Text.builder().onClick(TextActions.suggestCommand("vote")).append(Text.of("Have you voted recently? Do /vote to get your daily voting rewards!")).build())
+            .build();
 
 
     /*

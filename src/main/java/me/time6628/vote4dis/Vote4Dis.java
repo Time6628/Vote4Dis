@@ -79,6 +79,13 @@ public class Vote4Dis {
         instance = this;
         registerCommands();
         registerEvents();
+
+        game.getScheduler().createTaskBuilder()
+                .async()
+                .delay(5, TimeUnit.MINUTES)
+                .interval(5, TimeUnit.MINUTES)
+                .execute(new RecentlyVotedTask())
+                .submit(this);
     }
 
     private void registerEvents() {
@@ -191,6 +198,9 @@ public class Vote4Dis {
 
     @Listener
     public void onPlayerJoin(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
+        if (!hasVotedRecently(player.getUniqueId())) {
+            Texts.hasVotedRecently.sendTo(player);
+        }
         Map<String, TextElement> args = new HashMap<>();
         args.put("votes", Text.of(getVotes(player)));
         player.sendMessage(ChatTypes.ACTION_BAR, Texts.votesMessage.apply(args).build());
@@ -253,6 +263,16 @@ public class Vote4Dis {
         }
     }
 
+    public boolean hasVotedRecently(UUID uuid) {
+        return hasVotedRecently(uuid.toString());
+    }
+
+    public boolean hasVotedRecently(String uuid) {
+        try (Jedis jedis = getJedis().getResource()) {
+            return jedis.exists(RedisKeys.HAS_VOTED + uuid);
+        }
+    }
+
     private String getNameFromCache(String uuid) {
         try (Jedis jedis = getJedis().getResource()) {
             return jedis.hget(RedisKeys.UUID_CACHE, uuid);
@@ -271,7 +291,6 @@ public class Vote4Dis {
             return b;
         }
     }
-
 
     /* REDIS STUFF */
     private JedisPool setupRedis(String host, int port) {
@@ -334,7 +353,19 @@ public class Vote4Dis {
             player.sendMessage(Texts.DOUBLE_VOTES);
         }
         rewardPlayer(player);
+        votedRecently(player.getUniqueId());
         logger.info("Username: " + vote.getUsername(), "IP Address: " + vote.getAddress(), "Site: " + vote.getServiceName());
+    }
+
+    private void votedRecently(UUID uniqueId) {
+        votedRecently(uniqueId.toString());
+    }
+
+    private void votedRecently(String uuid) {
+        try (Jedis jedis = getJedis().getResource()) {
+            jedis.set(RedisKeys.HAS_VOTED + uuid, "yes");
+            jedis.expire(RedisKeys.HAS_VOTED + uuid, (int) TimeUnit.DAYS.toSeconds(1));
+        }
     }
 
     public void addVoteLink(String link) {

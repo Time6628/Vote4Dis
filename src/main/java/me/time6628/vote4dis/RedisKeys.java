@@ -7,4 +7,5 @@ class RedisKeys {
     static final String VOTE_COUNT_KEY = "vote4dis:votecount";
     static final String UUID_CACHE = "vote4dis:uuidcache";
     static final String DOUBLE_REWARDS = "vote4dis:doublerewards";
+    static final String HAS_VOTED = "vote4dis:hasvoted:";
 }
