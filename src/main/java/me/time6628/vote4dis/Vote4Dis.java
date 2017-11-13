@@ -25,11 +25,14 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextElement;
 import org.spongepowered.api.text.TextTemplate;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -199,7 +202,7 @@ public class Vote4Dis {
     @Listener
     public void onPlayerJoin(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
         if (!hasVotedRecently(player.getUniqueId())) {
-            Texts.hasVotedRecently.sendTo(player);
+            Texts.hasVotedRecently().sendTo(player);
         }
         Map<String, TextElement> args = new HashMap<>();
         args.put("votes", Text.of(getVotes(player)));
@@ -328,9 +331,11 @@ public class Vote4Dis {
 
     @SuppressWarnings("ConstantConditions")
     private void rewardPlayer(String player) {
-        for (String voteReward : voteRewards) {
-            game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), voteReward.replace("@p", player));
-        }
+        Task.builder().execute(() -> {
+            for (String voteReward : voteRewards) {
+                game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), voteReward.replace("@p", player));
+            }
+        }).submit(this);
     }
 
     @SuppressWarnings("ConstantConditions")

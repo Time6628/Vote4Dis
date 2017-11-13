@@ -59,10 +59,12 @@ public class Texts {
     );
 
 
-    public static PaginationList hasVotedRecently = Vote4Dis.instance.getPaginationService().builder()
-            .title(Text.builder().color(TextColors.DARK_PURPLE).append(Text.of("Have you recently voted?")).build())
-            .contents(Text.builder().onClick(TextActions.suggestCommand("vote")).append(Text.of("Have you voted recently? Do /vote to get your daily voting rewards!")).build())
-            .build();
+    public static PaginationList hasVotedRecently() {
+        return Vote4Dis.instance.getPaginationService().builder()
+                .title(Text.builder().color(TextColors.DARK_PURPLE).append(Text.of("Have you recently voted?")).build())
+                .contents(Text.builder().onClick(TextActions.suggestCommand("vote")).append(Text.of("Have you voted recently? Do /vote to get your daily voting rewards!")).build())
+                .build();
+    }
 
 
     /*

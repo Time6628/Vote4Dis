@@ -17,7 +17,7 @@ repositories {
     }
 }
 dependencies {
-    compile 'org.spongepowered:spongeapi:6.+'
+    compile 'org.spongepowered:spongeapi:7.+'
     shadow 'redis.clients:jedis:2.9.0'
     //compile 'org.apache.commons:commons-pool2:2.4.2'
     shadow 'org.apache.commons:commons-pool2:2.4.2'
@@ -44,7 +44,7 @@ shadowJar {
     relocate 'org.apache', 'me.time6628.vote4dis.relocate.org.apache'
     relocate 'redis.clients', 'me.time6628.vote4dis.relocate.redis.clients'
 
-    archiveName = 'Vote4Dis-0.1.jar'
+    archiveName = 'Vote4Dis-0.2.jar'
 }
 
 build.dependsOn(shadowJar)

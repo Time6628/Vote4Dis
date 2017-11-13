@@ -8,7 +8,7 @@ public class RecentlyVotedTask implements Runnable {
     public void run() {
         pl.getGame().getServer().getOnlinePlayers().forEach(player -> {
             if (!pl.hasVotedRecently(player.getUniqueId())) {
-                Texts.hasVotedRecently.sendTo(player);
+                Texts.hasVotedRecently().sendTo(player);
             }
         });
     }
