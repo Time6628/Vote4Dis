@@ -1,7 +1,7 @@
-package me.time6628.vote4dis.commands;
+package me.time6628.vote4dis.sponge.commands;
 
-import me.time6628.vote4dis.Texts;
-import me.time6628.vote4dis.Vote4Dis;
+import me.time6628.vote4dis.sponge.Texts;
+import me.time6628.vote4dis.sponge.Vote4DisSponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Created by TimeTheCat on 3/1/2017.
  */
 public class TopVotesCommand implements CommandExecutor {
-    private final Vote4Dis pl = Vote4Dis.instance;
+    private final Vote4DisSponge pl = Vote4DisSponge.instance;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext commandContext) throws CommandException {

@@ -1,6 +1,6 @@
-package me.time6628.vote4dis.commands;
+package me.time6628.vote4dis.sponge.commands;
 
-import me.time6628.vote4dis.Vote4Dis;
+import me.time6628.vote4dis.sponge.Vote4DisSponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * Created by TimeTheCat on 7/4/2017.
  */
 public class DoubleVotesCommand implements CommandExecutor {
-    private Vote4Dis instance = Vote4Dis.instance;
+    private Vote4DisSponge instance = Vote4DisSponge.instance;
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         Optional<Integer> oi = args.getOne(Text.of("Days"));

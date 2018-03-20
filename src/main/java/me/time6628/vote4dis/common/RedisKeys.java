@@ -1,4 +1,4 @@
-package me.time6628.vote4dis;
+package me.time6628.vote4dis.common;
 
 /**
  * Created by TimeTheCat on 3/1/2017.

@@ -1,6 +1,6 @@
-package me.time6628.vote4dis.commands.subcommands.v4d;
+package me.time6628.vote4dis.sponge.commands.subcommands.v4d;
 
-import me.time6628.vote4dis.Vote4Dis;
+import me.time6628.vote4dis.sponge.Vote4DisSponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * Created by TimeTheCat on 3/9/2017.
  */
 public class AddRewardCommand implements CommandExecutor {
-    private Vote4Dis pl = Vote4Dis.instance;
+    private Vote4DisSponge pl = Vote4DisSponge.instance;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

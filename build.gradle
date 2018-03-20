@@ -15,9 +15,14 @@ repositories {
         name 'sonatype'
         url 'http://oss.sonatype.org/content/repositories/snapshots/'
     }
+    maven {
+        name 'spigot-repo'
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
 }
 dependencies {
     compile 'org.spongepowered:spongeapi:7.+'
+    compile 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     shadow 'redis.clients:jedis:2.9.0'
     //compile 'org.apache.commons:commons-pool2:2.4.2'
     shadow 'org.apache.commons:commons-pool2:2.4.2'
@@ -38,11 +43,13 @@ shadowJar {
 
         include dependency('redis.clients:jedis')
         include dependency('org.apache.commons:commons-pool2')
+        include dependency('ninja.leaping.configurate:configurate-hocon:3.3')
         //include dependency('org.apache.commons:commons-pool')
     }
 
     relocate 'org.apache', 'me.time6628.vote4dis.relocate.org.apache'
     relocate 'redis.clients', 'me.time6628.vote4dis.relocate.redis.clients'
+    relocate 'ninja.leaping', 'me.time6628.vote4dis.relocate.ninja.leaping'
 
     archiveName = 'Vote4Dis-0.2.jar'
 }

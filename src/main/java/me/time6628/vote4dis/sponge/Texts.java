@@ -1,4 +1,4 @@
-package me.time6628.vote4dis;
+package me.time6628.vote4dis.sponge;
 
 import static org.spongepowered.api.text.TextTemplate.arg;
 
@@ -6,7 +6,6 @@ import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.net.MalformedURLException;
@@ -60,7 +59,7 @@ public class Texts {
 
 
     public static PaginationList hasVotedRecently() {
-        return Vote4Dis.instance.getPaginationService().builder()
+        return Vote4DisSponge.instance.getPaginationService().builder()
                 .title(Text.builder().color(TextColors.DARK_PURPLE).append(Text.of("Have you recently voted?")).build())
                 .contents(Text.builder().onClick(TextActions.suggestCommand("vote")).append(Text.of("Have you voted recently? Do /vote to get your daily voting rewards!")).build())
                 .build();
@@ -79,7 +78,7 @@ public class Texts {
 
     public static List<Text> getVoteLinksAsText() {
         List<Text> texts = new ArrayList<>();
-        for (String s : Vote4Dis.instance.getVoteLinks()) {
+        for (String s : Vote4DisSponge.instance.getVoteLinks()) {
             try {
                 texts.add(Text.of(TextColors.LIGHT_PURPLE, TextActions.openUrl(new URL(s)), s));
             } catch (MalformedURLException e) {
