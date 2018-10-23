@@ -1,0 +1,16 @@
+name: Vote4Dis
+main: me.time6628.vote4dis.bukkit.Vote4DisBukkit
+version: 0.2
+author: Time6628
+website: http://Time6628.me
+depend: [Votifier]
+commands:
+  vote:
+    description: List of links for voting.
+    permission: vote4dis.vote
+  votes:
+    description: See how many votes you have.
+    permission: vote4dis.votes
+  topvotes:
+    description: Shows the top voters of the month.
+    permission: vote4dis.votes

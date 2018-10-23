@@ -160,10 +160,9 @@ public class Vote4DisSponge extends me.time6628.vote4dis.common.Vote4Dis {
             if (hasVotedRecently(player.getUniqueId())) {
                 Texts.hasVotedRecently().sendTo(player);
             }
-            Map<String, TextElement> args = new HashMap<>();
-            args.put("votes", Text.of(getVotes(player)));
-            player.sendMessage(ChatTypes.ACTION_BAR, Texts.votesMessage.apply(args).build());
-            player.sendMessage(Texts.votesMessage.apply(args).build());
+            Integer votes = getVotes(player);
+            player.sendMessage(ChatTypes.ACTION_BAR, Texts.formatVM(votes));
+            player.sendMessage(Texts.formatVM(votes));
             updateUUIDCache(player.getUniqueId().toString(), player.getName());
         }).submit(this);
     }
@@ -192,11 +191,7 @@ public class Vote4DisSponge extends me.time6628.vote4dis.common.Vote4Dis {
 
     @SuppressWarnings("ConstantConditions")
     private void rewardPlayer(String player) {
-        Task.builder().async().execute(() -> {
-            for (String voteReward : cfg.voting.rewards) {
-                game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), voteReward.replace("@p", player));
-            }
-        }).submit(this);
+        Task.builder().async().execute(() -> cfg.voting.rewards.forEach(s -> game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), s.replace("@p", player)))).submit(this);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -210,10 +205,8 @@ public class Vote4DisSponge extends me.time6628.vote4dis.common.Vote4Dis {
 
     public void handleVote(Player player, Vote vote) {
         Task.builder().async().execute(() -> {
-            Map<String, TextElement> args = new HashMap<>();
-            args.put("player", Text.of(player.getName()));
-            args.put("service", Text.of(vote.getServiceName()));
-            getGame().getServer().getBroadcastChannel().send(Texts.broadcastMessage.apply(args).build());
+            getGame().getServer().getBroadcastChannel()
+                    .send(Texts.formatBM(player.getName(), vote.getServiceName()));
             incrVote(player);
             if (isDoubleVotes()) {
                 rewardPlayer(player);
@@ -222,10 +215,6 @@ public class Vote4DisSponge extends me.time6628.vote4dis.common.Vote4Dis {
             rewardPlayer(player);
             votedRecently(player.getUniqueId());
         }).submit(this);
-    }
-
-    private void votedRecently(UUID uniqueId) {
-        super.votedRecently(uniqueId.toString());
     }
 
     public void addVoteLink(String link) {
@@ -244,5 +233,9 @@ public class Vote4DisSponge extends me.time6628.vote4dis.common.Vote4Dis {
         Map<String, TextElement> a = new HashMap<>();
         a.put(key, Text.of(value));
         return a;
+    }
+
+    public V4DConfig getCfg() {
+        return cfg;
     }
 }

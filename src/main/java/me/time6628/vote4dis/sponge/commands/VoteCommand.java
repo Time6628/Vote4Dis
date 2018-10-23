@@ -13,8 +13,8 @@ import org.spongepowered.api.service.pagination.PaginationList;
  * Created by TimeTheCat on 2/26/2017.
  */
 public class VoteCommand implements CommandExecutor {
-    private final Vote4DisSponge pl = Vote4DisSponge.instance;
 
+    private final Vote4DisSponge pl = Vote4DisSponge.instance;
 
     @Override
     public CommandResult execute(CommandSource commandSource, CommandContext commandContext) throws CommandException {

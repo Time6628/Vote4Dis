@@ -5,29 +5,27 @@ import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.DefaultObjectMapperFactory;
 
 import java.io.File;
 
 public class V4DConfigLoader {
 
-    private Vote4Dis vote4Dis;
     private V4DConfig v4DConfig;
     private File configFile;
 
     public V4DConfigLoader(File file) {
-        this.vote4Dis = vote4Dis;
+        configFile = file;
         if (!file.exists())
-            vote4Dis.getDataFolder().mkdirs();
+            file.mkdirs();
     }
 
     public boolean loadConfig() {
         try {
             File file = new File(configFile, "config.conf");
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            if (!file.exists()) file.createNewFile();
             ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(file).build();
-            CommentedConfigurationNode config = loader.load(ConfigurationOptions.defaults().setShouldCopyDefaults(true));
+            CommentedConfigurationNode config = loader.load(ConfigurationOptions.defaults().setObjectMapperFactory(new DefaultObjectMapperFactory()).setShouldCopyDefaults(true));
             v4DConfig = config.getValue(TypeToken.of(V4DConfig.class), new V4DConfig());
             loader.save(config);
             return true;

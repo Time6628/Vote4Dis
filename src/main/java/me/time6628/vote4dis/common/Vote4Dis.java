@@ -5,6 +5,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Vote4Dis extends JavaPlugin {
 
-    private static JedisPool jedisPool;
+    private JedisPool jedisPool;
 
     private int redisPort;
     private String redisHost;
@@ -23,7 +24,7 @@ public class Vote4Dis extends JavaPlugin {
         this.redisHost = redisHost;
         this.redisPass = redisPass;
 
-        if (this.redisPass.equals("")) {
+        if (!this.redisPass.equals("")) {
             jedisPool = setupRedis(this.redisHost, this.redisPort, this.redisPass);
         } else {
             jedisPool = setupRedis(this.redisHost, this.redisPort);
@@ -121,6 +122,10 @@ public class Vote4Dis extends JavaPlugin {
         } catch (Exception e) {
             return Collections.emptyMap();
         }
+    }
+
+    public void votedRecently(UUID uniqueId) {
+        votedRecently(uniqueId.toString());
     }
 
     public void votedRecently(String uuid) {
